@@ -8,22 +8,3 @@ request.http
 # General
 .DS_Store
 
-se genera un toen y a partir d eeso, un middleware y con esto determinar si un user accede o no a una ruta
-la funcion tokensign esta en el helpers
-
-el token se puede guardar e localstorage o en una cookie y cuando se
-necesita acceder a una ruta que requiera autentificacio , necesitamos
-capturar ese token ,sabr si es valido y saber de que usuario es 
-
-despues de eso se crea el middleware 
-
-1- se obtiene el token, por login user via post
-2- se guards ese token generado en el login 
-3- ir a la ruta post d eregistercourse sin el token, y me da error, me dice  "error": "Authorization token missing" porque yo no le he pasaod el token
-4- para que no tire error, hay que pasar en esa ruta post de registercourse,el token y a esa ruta post de regter course,adeas pasar el content type y el authorization 
-
-// si yo le paso otro email en la ruta del pto 4, agrega el curso igual, eso hay que arreglarlo porque no deberia agregarlo, deberia estar registrado primero 
-es decr, si el email recibido desde el body es el mismo usado en el login ,que permita registrar curso, sino, que indique que ese mail no esta registrado y que no puede tomar cursos con ese mail,que si una vez logueado el mail recibido desde el body es distinto al de login,que no pueda registrar curso
-
-arreglado
-

@@ -41,7 +41,9 @@ module.exports = {
         // Compare hashed passwords using bcrypt
         const isPasswordValid = await bcrypt.compare(password, user.password);
         const tokenSession = await tokenSign(user);
-        console.log(tokenSession);
+        //console.log(tokenSession);
+        console.log(user.password);
+
         if (isPasswordValid) {
           // Passwords match, generate a token
 
@@ -56,7 +58,6 @@ module.exports = {
         }
       } else {
         // User not found, return an error message
-
         res.status(401).json({ message: "Usuario no encontrado" });
       }
     } catch (error) {

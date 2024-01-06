@@ -1,5 +1,5 @@
 const UserSchema = require("../models/user.models.js");
-
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 module.exports = {
@@ -29,25 +29,34 @@ module.exports = {
 
   UpdateUser: async (req, res) => {
     try {
-      // Hash the password before updating the user
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const userId = new mongoose.Types.ObjectId(req.params.id.toString());
+      console.log("Valor de userId:", userId);
 
+      // Verifica que req.body.password y req.body.email existan
+      if (!req.body.password) {
+        return res.status(400).json({ message: "La contraseña es requerida" });
+      }
+
+      const existingUser = await UserSchema.findById(userId).lean();
+
+      // Verifica si el correo electrónico proporcionado es diferente al almacenado en la base de datos
+      if (req.body.email && req.body.email !== existingUser.email) {
+        return res.status(400).json({
+          message:
+            "Para actualizar usuario necesitas el correo que usaste para el registro.",
+        });
+      }
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const updatedUser = await UserSchema.findByIdAndUpdate(
-        req.params.id,
-        { password: hashedPassword }, // Update the password field with the hashed password
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+        userId,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      ).lean();
 
       if (updatedUser) {
-        // You don't need to compare passwords here, as you have already updated it with the hashed value
-        console.log(`Usuario logueado: ${updatedUser.email}`);
-        // Return the updated user
+        console.log(`Usuario actualizado: ${updatedUser.email}`);
         res.json(updatedUser);
       } else {
-        // User not found, return an error message
         res.status(401).json({ message: "Credenciales inválidas" });
       }
     } catch (error) {
@@ -57,10 +66,9 @@ module.exports = {
       });
     }
   },
-
   DeleteUser: (req, res) => {
-    const { id } = req.params;
-    UserSchema.deleteOne({ _id: id })
+    const { _id } = req.params;
+    UserSchema.deleteOne({ _id: _id })
       .then((data) => {
         if (data.deletedCount > 0) {
           res.json({ message: "Usuario eliminado satisfactoriamente" });

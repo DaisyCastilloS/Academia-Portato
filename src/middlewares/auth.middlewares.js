@@ -38,38 +38,4 @@ module.exports = {
       res.status(500).send({ error: "Internal server error" });
     }
   },
-
-  // LoginUser: async (req, res) => {
-  //   try {
-  //     const { email, password } = req.body;
-
-  //     // Find the user by email
-  //     const user = await UserSchema.findOne({ email });
-
-  //     // Check if the user exists
-  //     if (user) {
-  //       // Compare hashed passwords using bcrypt
-  //       const isPasswordValid = await bcrypt.compare(password, user.password);
-  //       const tokenSession = await tokenSign(user);
-  //       if (isPasswordValid) {
-  //         // Passwords match, generate a token
-
-  //         // Return the user and token
-  //         res.send({
-  //           data: user,
-  //           tokenSession,
-  //         });
-  //       } else {
-  //         // Passwords do not match, return an error message
-  //         res.status(401).json({ message: "Invalid password" });
-  //       }
-  //     } else {
-  //       // User not found, return an error message
-
-  //       res.status(401).json({ message: "Usuario no encontrado" });
-  //     }
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // },
 };

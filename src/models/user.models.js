@@ -54,9 +54,11 @@ UserSchema.pre("validate", async function (next) {
     // Verifica si el email existe
     if (this.email && !this.emailExists) {
       // Hash the password before saving it
-      const hashedPassword = await bcrypt.hash(this.password, 10);
-      this.password = hashedPassword;
-
+      // const salt = await bcrypt.genSalt();
+      // const hashedPassword = await bcrypt.hash(this.password, salt);
+      // this.password = hashedPassword;
+      // console.log(salt);
+      // console.log(hashedPassword);
       // // Guardar el usuario solo si el email no existe, en el conrolador ya se guarda el usuario, asi que por eso lo oculto aca
       // const savedUser = await this.save();
       // console.log(savedUser);
