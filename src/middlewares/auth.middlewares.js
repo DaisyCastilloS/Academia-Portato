@@ -1,4 +1,4 @@
-const { verifyToken } = require("../helpers/generateToken");
+const { verifyToken } = require("../helpers/generateToken.js");
 
 module.exports = {
   AuthMiddleware: async (req, res, next) => {

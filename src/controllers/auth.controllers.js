@@ -19,7 +19,7 @@ module.exports = {
       try {
         const savedUser = await newUser.save();
         res.json(savedUser);
-        console.log(savedUser);
+        //console.log(savedUser);
       } catch (saveError) {
         console.error(saveError);
         res.status(500).json({ message: saveError.message });
@@ -42,8 +42,8 @@ module.exports = {
         const isPasswordValid = await bcrypt.compare(password, user.password);
         const tokenSession = await tokenSign(user);
         //console.log(tokenSession);
-        console.log(user.password);
-
+        //console.log(user.password);
+        //console.log(password);
         if (isPasswordValid) {
           // Passwords match, generate a token
 

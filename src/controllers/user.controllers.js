@@ -30,7 +30,7 @@ module.exports = {
   UpdateUser: async (req, res) => {
     try {
       const userId = new mongoose.Types.ObjectId(req.params.id.toString());
-      console.log("Valor de userId:", userId);
+      //console.log("Valor de userId:", userId);
 
       // Verifica que req.body.password y req.body.email existan
       if (!req.body.password) {
@@ -54,7 +54,7 @@ module.exports = {
       ).lean();
 
       if (updatedUser) {
-        console.log(`Usuario actualizado: ${updatedUser.email}`);
+        //console.log(`Usuario actualizado: ${updatedUser.email}`);
         res.json(updatedUser);
       } else {
         res.status(401).json({ message: "Credenciales inválidas" });
@@ -67,8 +67,8 @@ module.exports = {
     }
   },
   DeleteUser: (req, res) => {
-    const { _id } = req.params;
-    UserSchema.deleteOne({ _id: _id })
+    const { id } = req.params;
+    UserSchema.deleteOne({ _id: id })
       .then((data) => {
         if (data.deletedCount > 0) {
           res.json({ message: "Usuario eliminado satisfactoriamente" });

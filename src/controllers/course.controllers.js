@@ -1,10 +1,26 @@
 const CourseSchema = require("../models/course.models.js");
+const { verifyToken } = require("../helpers/generateToken.js");
 
 module.exports = {
   CreateCourse: async (req, res) => {
     try {
       // Obtener los datos del cuerpo de la solicitud
       const { curso, nivel, precio, nombre, apellido, email } = req.body;
+
+      // Verificar el token
+      const token = req.headers.authorization;
+      //console.log(token);
+      //console.log(req.body.email);
+      if (!token) {
+        return res.status(401).json({ message: "Token no proporcionado" });
+      }
+
+      try {
+        // Utilizar la función verifyToken con await
+        await verifyToken(token);
+      } catch (err) {
+        return res.status(401).json({ message: err.message });
+      }
 
       // Crear una nueva instancia del modelo Course
       const newCourse = new CourseSchema({
@@ -23,7 +39,6 @@ module.exports = {
       res.json(savedCourse);
     } catch (error) {
       // Manejar errores durante el proceso de creación y guardado del curso
-
       res.status(500).json({ message: error.message });
     }
   },

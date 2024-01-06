@@ -41,17 +41,12 @@ const CourseSchema = mongoose.Schema({
       validator: async function (value) {
         // Obtener el nivel actual directamente del documento
         const nivelActual = this.get("nivel");
-        console.log("Nivel actual:", nivelActual);
 
         // Obtener el precio correspondiente al nivel seleccionado
         const precioEsperado = nivelesPreciosEnum[nivelActual];
-        console.log("Precio esperado:", precioEsperado);
 
         // Comparar el valor ingresado con el precio esperado
-        console.log("Valor ingresado:", value);
-
         const isValid = value === precioEsperado;
-        console.log("Es válido:", isValid);
 
         return isValid;
       },
@@ -81,25 +76,22 @@ const CourseSchema = mongoose.Schema({
             throw new Error(
               "No puedes registrar cursos con un correo diferente al del login"
             );
-          } // Check if the email exists in the database
-          const emailExists = await this.constructor.findOne({ email: value });
-          if (!emailExists) {
+          }
+
+          // Check if the email exists in the database
+          const emailExists = await this.constructor.findOne({
+            email: value,
+          });
+
+          if (emailExists) {
             throw new Error(
-              "Este correo electrónico no está registrado y no puedes tomar cursos con él"
+              "Ya tomaste un curso con este correo, sólo puedes tomar un curso por correo"
             );
           }
 
           return true;
         },
       },
-      {
-        validator: async function (value) {
-          const emailExists = await this.constructor.findOne({ email: value });
-          return !emailExists;
-        },
-        message: "Sólo puedes inscribir un curso con este email",
-      },
-
       {
         validator: function (value) {
           // Validación de formato de correo electrónico
