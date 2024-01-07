@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/user.models.js");
+const hashedPassword = require("../models/user.models.js");
+const ROLES = require("../models/role.models.js");
 const { tokenSign } = require("../helpers/generateToken.js");
 
 module.exports = {
@@ -7,8 +9,8 @@ module.exports = {
     try {
       const { password, nombre, apellido, email } = req.body;
 
-      // Hash the password before saving it
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // // Hash the password before saving it
+      // const hashedPassword = await bcrypt.hash(password, 10);
 
       const newUser = new UserSchema({
         password: hashedPassword,
@@ -32,7 +34,7 @@ module.exports = {
   LoginUser: async (req, res) => {
     try {
       const { email, password } = req.body;
-
+      //para comprobar si ya existe el usuario, se creara un archivo en otra carpeta para reutilizaro aca
       // Find the user by email
       const user = await UserSchema.findOne({ email });
 

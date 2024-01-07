@@ -37,7 +37,7 @@ module.exports = {
         return res.status(400).json({ message: "La contraseña es requerida" });
       }
 
-      const existingUser = await UserSchema.findById(userId).lean();
+      const existingUser = await UserSchema.findByIdAndUpdate(userId).lean();
 
       // Verifica si el correo electrónico proporcionado es diferente al almacenado en la base de datos
       if (req.body.email && req.body.email !== existingUser.email) {
@@ -68,13 +68,13 @@ module.exports = {
   },
   DeleteUser: (req, res) => {
     const { id } = req.params;
-    UserSchema.deleteOne({ id: id })
+    UserSchema.findByIdAndDelete({ _id: id })
       .then((data) => {
         if (data.deletedCount > 0) {
           res.json({ message: "Usuario eliminado satisfactoriamente" });
         } else {
           res.json({
-            message: "Usuario no encontrado o no puede ser eliminado",
+            message: "Usuario eliminado sin token",
           });
         }
       })

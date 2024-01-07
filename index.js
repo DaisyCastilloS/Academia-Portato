@@ -1,18 +1,21 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
+const { CreateRoles } = require("./src/libs/loadRolesSetup.js");
 const courseRoutes = require("./src/routes/course.Routes.js");
 const userRoutes = require("./src/routes/user.Routes.js");
 const authRoutes = require("./src/routes/auth.Routes.js");
-
 const cors = require("cors");
+const app = express();
+CreateRoles();
 
 //middleware:
 app.use(cors());
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/courses", courseRoutes);
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
