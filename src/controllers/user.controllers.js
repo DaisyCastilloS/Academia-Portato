@@ -68,7 +68,7 @@ module.exports = {
   },
   DeleteUser: (req, res) => {
     const { id } = req.params;
-    UserSchema.deleteOne({ _id: id })
+    UserSchema.deleteOne({ id: id })
       .then((data) => {
         if (data.deletedCount > 0) {
           res.json({ message: "Usuario eliminado satisfactoriamente" });

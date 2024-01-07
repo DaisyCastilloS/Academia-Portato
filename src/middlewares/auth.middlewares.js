@@ -1,4 +1,5 @@
 const { verifyToken } = require("../helpers/generateToken.js");
+const UserSchema = require("../models/user.models.js");
 
 module.exports = {
   AuthMiddleware: async (req, res, next) => {
@@ -36,6 +37,20 @@ module.exports = {
     } catch (e) {
       console.error(e);
       res.status(500).send({ error: "Internal server error" });
+    }
+  },
+  isAdmin: async (req, res, next) => {
+    try {
+      const { email } = req;
+      const adminUser = await UserSchema.findOne({ where: { email } });
+      console.log(adminUser);
+      if (!adminUser || adminUser.role !== "admin") {
+        throw new Error("You are not an admin");
+      }
+
+      next();
+    } catch (error) {
+      res.status(401).json({ error: error.message });
     }
   },
 };
