@@ -1,10 +1,10 @@
 const roleSchema = require("../models/role.models.js");
 
 module.exports = {
-  CreateRoles: async (req, res) => {
+  CreateRoles: async () => {
     try {
       // Count Documents
-      const count = await Role.estimatedDocumentCount();
+      const count = await roleSchema.estimatedDocumentCount();
 
       // check for existing roles
       if (count > 0) return;
