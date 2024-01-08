@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/user.models.js");
+const roleSchema = require("../models/role.models.js");
 const hashedPassword = require("../models/user.models.js");
 const ROLES = require("../models/role.models.js");
 const { tokenSign } = require("../helpers/generateToken.js");
@@ -7,7 +8,7 @@ const { tokenSign } = require("../helpers/generateToken.js");
 module.exports = {
   RegisterUser: async (req, res) => {
     try {
-      const { password, nombre, apellido, email } = req.body;
+      const { password, nombre, apellido, email, roles } = req.body;
 
       // // Hash the password before saving it
       // const hashedPassword = await bcrypt.hash(password, 10);
@@ -18,6 +19,14 @@ module.exports = {
         apellido,
         email,
       });
+      //si no le paso rol ,por defecto, poen rol user
+      if (roles) {
+        const foundRoles = await roleSchema.findOne({ name: { $in: roles } });
+        newUser.roles = foundRoles.map((role) => role._id);
+      } else {
+        const role = await roleSchema.findOne({ name: "user" });
+        newUser.roles = [role._id];
+      }
       try {
         const savedUser = await newUser.save();
         res.json(savedUser);
