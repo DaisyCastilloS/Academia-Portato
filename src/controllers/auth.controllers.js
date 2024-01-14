@@ -3,10 +3,19 @@ const UserSchema = require("../models/user.models.js");
 const { tokenSign } = require("../helpers/generateToken.js");
 
 module.exports = {
+  ValidatePassword: async (password) => {
+    // Requiere al menos 7 caracteres con al menos una letra mayúscula y un número
+    return /^(?=.*[A-Z])(?=.*\d).{7,}$/.test(password);
+  },
   RegisterUser: async (req, res) => {
     try {
       const { password, nombre, apellido, email } = req.body;
-
+      // Validar la contraseña antes de hash
+      if (!(await module.exports.ValidatePassword(password))) {
+        return res.status(400).json({
+          message: "La contraseña no cumple con los requisitos de seguridad.",
+        });
+      }
       // Hash the password before saving it
       const hashedPassword = await bcrypt.hash(password, 10);
 
