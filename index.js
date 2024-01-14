@@ -3,10 +3,11 @@ const app = express();
 const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
+
 const courseRoutes = require("./src/routes/course.Routes.js");
 const userRoutes = require("./src/routes/user.Routes.js");
-const authRoutes = require("./src/routes/auth.Routes.js");
-
+const authUserRoutes = require("./src/routes/authUser.Routes.js");
+const authAdminRoutes = require("./src/routes/authAdmin.Routes.js");
 const cors = require("cors");
 
 //middleware:
@@ -15,7 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/courses", courseRoutes);
 app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
+app.use("/authUser", authUserRoutes);
+app.use("/authAdmin", authAdminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to my api");
