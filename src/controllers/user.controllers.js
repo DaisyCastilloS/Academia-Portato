@@ -54,7 +54,7 @@ module.exports = {
       ).lean();
 
       if (updatedUser) {
-        //console.log(`Usuario actualizado: ${updatedUser.email}`);
+        console.log(`Usuario actualizado: ${updatedUser.email}`);
         res.json(updatedUser);
       } else {
         res.status(401).json({ message: "Credenciales inválidas" });
