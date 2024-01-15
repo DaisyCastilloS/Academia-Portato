@@ -39,6 +39,12 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  roles: [
+    {
+      ref: "Role",
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
 });
 
 // UserSchema.pre("validate", async function (next) {
