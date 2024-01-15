@@ -84,7 +84,7 @@ module.exports = {
   },
   RegisterAdmin: async (req, res) => {
     try {
-      const { password, nombre, apellido, email } = req.body;
+      const { password, nombre, apellido, email, roles } = req.body;
 
       // Validar la contraseña antes de hash
       if (!(await module.exports.ValidatePassword(password))) {
@@ -106,7 +106,15 @@ module.exports = {
         email,
         role, // Agregar el campo role al modelo de usuario
       });
-
+      if (roles) {
+        const foundRoles = await Role.find({ name: { $in: roles } });
+        //devuelve el id del rol
+        newUser.roles = foundRoles.map((role) => role._id);
+      } else {
+        //si el user no entrega el rol, se le da user por defecto
+        const role = await Role.findOne({ name: "admin" });
+        newUser.roles = [role._id];
+      }
       try {
         const savedUser = await newUser.save();
         res.json(savedUser);
