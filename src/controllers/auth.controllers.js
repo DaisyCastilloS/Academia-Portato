@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/user.models.js");
 const { tokenSign } = require("../helpers/generateToken.js");
-
+const Role = require("../models/role.models.js");
 module.exports = {
   ValidatePassword: async (password) => {
     // Requiere al menos 7 caracteres con al menos una letra mayúscula y un número
@@ -9,7 +9,7 @@ module.exports = {
   },
   RegisterUser: async (req, res) => {
     try {
-      const { password, nombre, apellido, email } = req.body;
+      const { password, nombre, apellido, email, roles } = req.body;
       // Validar la contraseña antes de hash
       if (!(await module.exports.ValidatePassword(password))) {
         return res.status(400).json({
@@ -25,6 +25,15 @@ module.exports = {
         apellido,
         email,
       });
+      if (roles) {
+        const foundRoles = await Role.find({ name: { $in: roles } });
+        //devuelve el id del rol
+        newUser.roles = foundRoles.map((role) => role._id);
+      } else {
+        //si el user no entrega el rol, se le da user por defecto
+        const role = await Role.findOne({ name: "user" });
+        newUser.roles = [role._id];
+      }
       try {
         const savedUser = await newUser.save();
         res.json(savedUser);
