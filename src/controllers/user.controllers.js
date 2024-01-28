@@ -6,25 +6,29 @@ module.exports = {
   GetAllUsers: (req, res) => {
     UserSchema.find()
       .then((data) => {
-        if (data.length > 0) {
-          res.status(200).json(data);
-        } else {
+        if (!data) {
           res.status(204).json({ message: "Users not found" });
-        }
-      })
-      .catch((error) => res.status(500).json({ message: error }));
-  },
-  FindUser: (req, res) => {
-    const { id } = req.params;
-    UserSchema.findOne({ _id: id })
-      .then((data) => {
-        if (data) {
-          res.json(data);
         } else {
-          res.json({ message: "Usuario no encontrado" });
+          res.status(200).json(data);
         }
       })
-      .catch((error) => res.json({ message: error }));
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred" });
+      });
+  },
+  FindUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await UserSchema.findOne({ _id: id });
+      if (data) {
+        res.json(data);
+      } else {
+        res.json({ message: "Usuario no encontrado" });
+      }
+    } catch (error) {
+      res.json({ message: error });
+    }
   },
 
   UpdateUser: async (req, res) => {

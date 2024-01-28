@@ -4,13 +4,14 @@ const { verifyToken } = require("../helpers/generateToken.js");
 module.exports = {
   CreateCourse: async (req, res) => {
     try {
-      // Obtener los datos del cuerpo de la solicitud
+      // Validate request body for required fields
       const { curso, nivel, precio, nombre, apellido, email } = req.body;
+      if (!curso || !nivel || !precio || !nombre || !apellido || !email) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
 
       // Verificar el token
       const token = req.headers.authorization;
-      //console.log(token);
-      //console.log(req.body.email);
       if (!token) {
         return res.status(401).json({ message: "Token no proporcionado" });
       }
@@ -19,7 +20,9 @@ module.exports = {
         // Utilizar la función verifyToken con await
         await verifyToken(token);
       } catch (err) {
-        return res.status(401).json({ message: err.message });
+        // Log the error
+        console.error(err);
+        return res.status(401).json({ message: "Authentication failed" });
       }
 
       // Crear una nueva instancia del modelo Course
@@ -36,8 +39,10 @@ module.exports = {
       const savedCourse = await newCourse.save();
 
       // Devolver el nuevo curso guardado
-      res.json(savedCourse);
+      res.status(201).json(savedCourse);
     } catch (error) {
+      // Log the error
+      console.error(error);
       // Manejar errores durante el proceso de creación y guardado del curso
       res.status(500).json({ message: error.message });
     }
@@ -49,7 +54,7 @@ module.exports = {
         if (data.length > 0) {
           res.json(data);
         } else {
-          res.json({ message: "Cursos no encontrados" });
+          res.status(404).json({ message: "Courses not found" });
         }
       })
       .catch((error) => res.json({ message: error }));
