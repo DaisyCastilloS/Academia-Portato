@@ -8,7 +8,7 @@ module.exports = {
         role: user.role,
       },
       process.env.TOKEN_KEY,
-      { expiresIn: "2h" }
+      { expiresIn: "1h" }
     );
   },
 

@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/user.models.js");
-const { tokenSign } = require("../helpers/generateToken.js");
+const { tokenSign, verifyToken } = require("../helpers/generateToken.js");
 const Role = require("../models/role.models.js");
 module.exports = {
   ValidatePassword: async (password) => {
@@ -46,7 +46,6 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
-
   LoginUser: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -82,6 +81,38 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
+  LogoutUser: async (req, res) => {
+    try {
+      const { token } = req.body;
+
+      // Verificar si se proporcionó un token
+      if (!token) {
+        return res.status(400).json({ message: "Token missing" });
+      }
+
+      // Verificar si el token es válido y decodificarlo para obtener la información del usuario
+      const decodedToken = await verifyToken(token);
+
+      if (!decodedToken) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+      }
+
+      // Verificar si el token ha expirado
+      const currentTime = Date.now() / 1000; // Tiempo actual en segundos
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        return res.status(401).json({ message: "Token has expired" });
+      }
+
+      // Aquí podrías realizar cualquier otra lógica de sesión necesaria,
+      // como invalidar el token en una lista negra o realizar otras acciones de limpieza.
+
+      // Devolver una respuesta exitosa
+      return res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
   RegisterAdmin: async (req, res) => {
     try {
       const { password, nombre, apellido, email, roles } = req.body;
@@ -166,6 +197,37 @@ module.exports = {
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  },
+  LogoutAdmin: async (req, res) => {
+    try {
+      const { token } = req.body;
+
+      // Verificar si se proporcionó un token
+      if (!token) {
+        return res.status(400).json({ message: "Token missing" });
+      }
+
+      // Verificar si el token es válido y decodificarlo para obtener la información del usuario
+      const decodedToken = await verifyToken(token);
+
+      if (!decodedToken) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+      }
+
+      // Verificar si el token ha expirado
+      const currentTime = Date.now() / 1000; // Tiempo actual en segundos
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        return res.status(401).json({ message: "Token has expired" });
+      }
+
+      // Aquí podrías realizar cualquier otra lógica de sesión necesaria,
+      // como invalidar el token en una lista negra o realizar otras acciones de limpieza.
+
+      // Devolver una respuesta exitosa
+      return res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 };
