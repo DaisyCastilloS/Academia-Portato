@@ -1,29 +1,8 @@
-const express = require("express");
-const app = express();
+//1 archivo madre
 const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
-const { CreateRoles } = require("./src/libs/createRoles.js");
-const courseRoutes = require("./src/routes/course.Routes.js");
-const userRoutes = require("./src/routes/user.Routes.js");
-const authUserRoutes = require("./src/routes/authUser.Routes.js");
-const authAdminRoutes = require("./src/routes/authAdmin.Routes.js");
-const cors = require("cors");
-
-//middleware:
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-CreateRoles();
-app.use("/courses", courseRoutes);
-app.use("/users", userRoutes);
-app.use("/authUser", authUserRoutes);
-app.use("/authAdmin", authAdminRoutes);
-
-app.get("/", (req, res) => {
-  res.send("Welcome to my api");
-});
-
+const app = require("./src/app.js");
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 mongoose
   .connect(process.env.MONGODB_URI)
