@@ -186,13 +186,11 @@ module.exports = {
             res.status(401).json({ message: "Invalid password" });
           }
         } else {
-          // User is not an admin, return an error message
           res.status(401).json({
             message: "The provided email is not associated with an admin",
           });
         }
       } else {
-        // User not found, return an error message
         res.status(401).json({ message: "User not found" });
       }
     } catch (error) {
