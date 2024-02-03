@@ -4,7 +4,7 @@ module.exports = {
   tokenSign: async (user) => {
     return jwt.sign(
       {
-        _id: user._id,
+        _id: user.id,
         role: user.role,
       },
       process.env.TOKEN_KEY,

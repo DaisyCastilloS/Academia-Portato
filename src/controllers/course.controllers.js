@@ -5,34 +5,20 @@ module.exports = {
   CreateCourse: async (req, res) => {
     try {
       // Validate request body for required fields
-      const { curso, nivel, precio, nombre, apellido, email } = req.body;
-      if (!curso || !nivel || !precio || !nombre || !apellido || !email) {
+      const { curso, nivel, precio } = req.body;
+      const user = req.user;
+
+      if (!curso || !nivel || !precio) {
         return res.status(400).json({ message: "Missing required fields" });
       }
-
-      // Verificar el token
-      const token = req.headers.authorization;
-      if (!token) {
-        return res.status(401).json({ message: "Token no proporcionado" });
-      }
-
-      try {
-        // Utilizar la función verifyToken con await
-        await verifyToken(token);
-      } catch (err) {
-        // Log the error
-        console.error(err);
-        return res.status(401).json({ message: "Authentication failed" });
-      }
-
       // Crear una nueva instancia del modelo Course
       const newCourse = new CourseSchema({
         curso,
         nivel,
         precio,
-        nombre,
-        apellido,
-        email,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
       });
 
       // Guardar el nuevo curso en la base de datos

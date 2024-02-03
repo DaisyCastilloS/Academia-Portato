@@ -28,12 +28,10 @@ module.exports = {
       // Verify the token
       const tokenData = await verifyToken(token);
 
-      // Check if the token is valid and contains user information
-      if (tokenData && tokenData._id) {
-        next(); // Proceed to the next middleware or route handler
-      } else {
-        res.status(401).send({ error: "Invalid or malformed token" });
-      }
+      const user = await UserSchema.findById(tokenData._id);
+      req.user = user;
+
+      next();
     } catch (e) {
       console.error(e);
       res.status(500).send({ error: "Internal server error" });

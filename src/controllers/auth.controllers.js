@@ -36,7 +36,7 @@ module.exports = {
       }
       try {
         const savedUser = await newUser.save();
-        res.json(savedUser);
+        res.status(201).json({ msg: "Usuario creado con exito" });
         //console.log(savedUser);
       } catch (saveError) {
         console.error(saveError);
@@ -56,8 +56,13 @@ module.exports = {
       // Check if the user exists
       if (user) {
         // Compare hashed passwords using bcrypt
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        const tokenSession = await tokenSign(user);
+
+        const tokenSession = await tokenSign({
+          id: user._id,
+          role: user.roles,
+        });
         //console.log(tokenSession);
         //console.log(user.password);
         //console.log(password);
@@ -65,8 +70,7 @@ module.exports = {
           // Passwords match, generate a token
 
           // Return the user and token
-          res.send({
-            data: user,
+          res.status(200).send({
             tokenSession,
           });
         } else {

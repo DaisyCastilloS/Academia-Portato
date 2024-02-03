@@ -24,7 +24,7 @@ module.exports = {
       if (data) {
         res.json(data);
       } else {
-        res.json({ message: "Usuario no encontrado" });
+        res.json({ message: "User not found" });
       }
     } catch (error) {
       res.json({ message: error });
@@ -38,7 +38,7 @@ module.exports = {
 
       // Verifica que req.body.password y req.body.email existan
       if (!req.body.password) {
-        return res.status(400).json({ message: "La contraseña es requerida" });
+        return res.status(400).json({ message: "Password is required" });
       }
 
       const existingUser = await UserSchema.findById(userId).lean();
