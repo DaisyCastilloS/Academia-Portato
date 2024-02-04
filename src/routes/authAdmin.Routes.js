@@ -3,11 +3,11 @@ const router = express.Router();
 
 const {
   RegisterAdmin,
-  LoginAdmin,
+  LoginUA,
   LogoutAdmin,
 } = require("../controllers/auth.controllers.js");
 
 router.post("/registerAdmin", RegisterAdmin);
-router.post("/loginAdmin", LoginAdmin);
+router.post("/loginAdmin", LoginUA);
 router.post("/logoutAdmin", LogoutAdmin);
 module.exports = router;

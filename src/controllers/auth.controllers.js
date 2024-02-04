@@ -46,7 +46,10 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
-  LoginUser: async (req, res) => {
+
+  //este contrlador tiene el login user y admin integrados y compara aca, no los hice a parte
+
+  LoginUA: async (req, res) => {
     try {
       const { email, password } = req.body;
 
@@ -55,34 +58,54 @@ module.exports = {
 
       // Check if the user exists
       if (user) {
-        // Compare hashed passwords using bcrypt
+        // Check if the user is an admin
+        if (user.roles.includes("admin")) {
+          // For admin login
+          // Compare hashed passwords using bcrypt
+          const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+          if (isPasswordValid) {
+            // Passwords match, generate a token
+            const tokenSession = await tokenSign({
+              id: user._id,
+              role: user.roles,
+            });
 
-        const tokenSession = await tokenSign({
-          id: user._id,
-          role: user.roles,
-        });
-        //console.log(tokenSession);
-        //console.log(user.password);
-        //console.log(password);
-        if (isPasswordValid) {
-          // Passwords match, generate a token
-
-          // Return the user and token
-          res.status(200).send({
-            tokenSession,
-          });
+            // Return the user and token
+            return res.status(200).send({
+              tokenSession,
+            });
+          } else {
+            // Passwords do not match, return an error message
+            return res.status(401).json({ message: "Invalid password" });
+          }
         } else {
-          // Passwords do not match, return an error message
-          res.status(401).json({ message: "Invalid password" });
+          // For regular user login
+          // Compare hashed passwords using bcrypt
+          const isPasswordValid = await bcrypt.compare(password, user.password);
+
+          if (isPasswordValid) {
+            // Passwords match, generate a token
+            const tokenSession = await tokenSign({
+              id: user._id,
+              role: user.roles,
+            });
+
+            // Return the user and token
+            return res.status(200).send({
+              tokenSession,
+            });
+          } else {
+            // Passwords do not match, return an error message
+            return res.status(401).json({ message: "Invalid password" });
+          }
         }
       } else {
         // User not found, return an error message
-        res.status(401).json({ message: "Usuario no encontrado" });
+        return res.status(401).json({ message: "Usuario no encontrado" });
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
   LogoutUser: async (req, res) => {
@@ -162,45 +185,6 @@ module.exports = {
     }
   },
 
-  LoginAdmin: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-
-      // Find the user by email
-      const user = await UserSchema.findOne({ email });
-
-      // Check if the user exists
-      if (user) {
-        // Check if the user is an admin or if the email is associated with an admin,here,add the admin emails
-        if (user.role === "admin" || user.email === "daisyadmin@gmail.com") {
-          // Compare hashed passwords using bcrypt
-          const isPasswordValid = await bcrypt.compare(password, user.password);
-
-          if (isPasswordValid) {
-            // Passwords match, generate a token
-            const tokenSession = await tokenSign(user);
-
-            // Return the user and token
-            res.send({
-              data: user,
-              tokenSession,
-            });
-          } else {
-            // Passwords do not match, return an error message
-            res.status(401).json({ message: "Invalid password" });
-          }
-        } else {
-          res.status(401).json({
-            message: "The provided email is not associated with an admin",
-          });
-        }
-      } else {
-        res.status(401).json({ message: "User not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
   LogoutAdmin: async (req, res) => {
     try {
       const { token } = req.body;
