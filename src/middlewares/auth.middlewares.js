@@ -19,9 +19,7 @@ module.exports = {
       // Check if the Authorization header is present
       const token = req.headers.authorization?.split(" ").pop();
       if (!token) {
-        res
-          .status(401)
-          .send({ error: "Debes estar logueado para registrar un curso" });
+        res.status(401).send({ error: "Debes estar logueado" });
         return;
       }
 
@@ -39,12 +37,28 @@ module.exports = {
   },
   isAdmin: async (req, res, next) => {
     try {
-      const { email } = req;
-      const adminUser = await UserSchema.findOne({ where: { email } });
-      console.log(adminUser);
-      if (!adminUser || adminUser.role !== "admin") {
+      const authToken = req.headers.authorization;
+      console.log("Auth token:", authToken);
+      if (!authToken) {
+        throw new Error("Token not provided");
+      }
+      //aqui esta el problem,no se puede verificar el token
+      const userData = await verifyToken(authToken);
+      console.log("Token data:", userData);
+      if (!userData || !userData._id) {
+        throw new Error("Invalid token data");
+      }
+
+      const user = await UserSchema.findById(userData._id);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const isAdmin = user.role === "admin";
+      if (isAdmin) {
         throw new Error("You are not an admin");
       }
+
+      req.adminId = user._id;
 
       next();
     } catch (error) {
