@@ -16,9 +16,9 @@ module.exports = {
         curso,
         nivel,
         precio,
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
+        // nombre: user.nombre,
+        // apellido: user.apellido,
+        // email: user.email,
       });
 
       // Guardar el nuevo curso en la base de datos

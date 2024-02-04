@@ -55,52 +55,52 @@ const CourseSchema = mongoose.Schema({
     enum: Object.values(nivelesPreciosEnum),
   },
 
-  nombre: {
-    type: String,
-    required: true,
-  },
-  apellido: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: [5, "El correo electrónico debe tener al menos 5 caracteres"],
-    validate: [
-      {
-        validator: async function (value) {
-          const isLoggedInUser = this.isLoggedInUser || false;
-          if (isLoggedInUser && value !== isLoggedInUser.email) {
-            throw new Error(
-              "No puedes registrar cursos con un correo diferente al del login"
-            );
-          }
+  // nombre: {
+  //   type: String,
+  //   required: true,
+  // },
+  // apellido: {
+  //   type: String,
+  //   required: true,
+  // },
+  // email: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  //   minlength: [5, "El correo electrónico debe tener al menos 5 caracteres"],
+  //   validate: [
+  //     {
+  //       validator: async function (value) {
+  //         const isLoggedInUser = this.isLoggedInUser || false;
+  //         if (isLoggedInUser && value !== isLoggedInUser.email) {
+  //           throw new Error(
+  //             "No puedes registrar cursos con un correo diferente al del login"
+  //           );
+  //         }
 
-          // Check if the email exists in the database
-          const emailExists = await this.constructor.findOne({
-            email: value,
-          });
+  //         // Check if the email exists in the database
+  //         const emailExists = await this.constructor.findOne({
+  //           email: value,
+  //         });
 
-          if (emailExists) {
-            throw new Error(
-              "Ya tomaste un curso con este correo, sólo puedes tomar un curso por correo"
-            );
-          }
+  //         if (emailExists) {
+  //           throw new Error(
+  //             "Ya tomaste un curso con este correo, sólo puedes tomar un curso por correo"
+  //           );
+  //         }
 
-          return true;
-        },
-      },
-      {
-        validator: function (value) {
-          // Validación de formato de correo electrónico
-          return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-        },
-        message: "Formato de correo electrónico no válido",
-      },
-    ],
-  },
+  //         return true;
+  //       },
+  //     },
+  //     {
+  //       validator: function (value) {
+  //         // Validación de formato de correo electrónico
+  //         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+  //       },
+  //       message: "Formato de correo electrónico no válido",
+  //     },
+  //   ],
+  // },
 });
 
 CourseSchema.pre("validate", function (next) {

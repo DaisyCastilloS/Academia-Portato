@@ -31,6 +31,7 @@ module.exports = {
     }
   },
 
+  //me falta agregar mas validaciones para contraseñas
   UpdateUser: async (req, res) => {
     try {
       const userId = new mongoose.Types.ObjectId(req.params.id.toString());
@@ -58,8 +59,8 @@ module.exports = {
       ).lean();
 
       if (updatedUser) {
-        console.log(`Usuario actualizado: ${updatedUser.email}`);
-        res.json(updatedUser);
+        console.log();
+        res.status(200).json({ msg: "Contraseña actualizada con exito" });
       } else {
         res.status(401).json({ message: "Credenciales inválidas" });
       }

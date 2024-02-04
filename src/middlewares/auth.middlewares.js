@@ -27,10 +27,10 @@ module.exports = {
 
       // Verify the token
       const tokenData = await verifyToken(token);
-
+      //comparara si la id del token es igual al id del user
       const user = await UserSchema.findById(tokenData._id);
       req.user = user;
-
+      console.log(user);
       next();
     } catch (e) {
       console.error(e);
