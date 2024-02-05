@@ -28,41 +28,50 @@ module.exports = {
       //comparara si la id del token es igual al id del user
       const user = await UserSchema.findById(tokenData._id);
       req.user = user;
-      console.log(user);
+      console.log(tokenData);
       next();
     } catch (e) {
       console.error(e);
       res.status(500).send({ error: "Internal server error" });
     }
   },
-  isAdmin: async (req, res, next) => {
-    try {
-      const authToken = req.headers.authorization;
-      console.log("Auth token:", authToken);
-      if (!authToken) {
-        throw new Error("Token not provided");
-      }
-      //aqui esta el problem,no se puede verificar el token
-      const userData = await verifyToken(authToken);
-      console.log("Token data:", userData);
-      if (!userData || !userData._id) {
-        throw new Error("Invalid token data");
-      }
+  // isAdmin: async (req, res, next) => {
+  //   try {
+  //     const authToken = req.headers.authorization;
+  //     if (!authToken) {
+  //       return res.status(401).json({ error: "Token not provided" });
+  //     }
 
-      const user = await UserSchema.findById(userData._id);
-      if (!user) {
-        throw new Error("User not found");
-      }
-      const isAdmin = user.role === "admin";
-      if (isAdmin) {
-        throw new Error("You are not an admin");
-      }
+  //     // Extraer el token del encabezado de autorización
+  //     const token = authToken.split(" ")[1];
 
-      req.adminId = user._id;
+  //     // Verificar el token
+  //     const userData = await verifyToken(token);
+  //     console.log(userData);
+  //     if (!userData || !userData._id) {
+  //       return res.status(401).json({ error: "Invalid token data" });
+  //     }
 
-      next();
-    } catch (error) {
-      res.status(401).json({ error: error.message });
-    }
-  },
+  //     // Buscar al usuario en la base de datos
+  //     const user = await UserSchema.findById(userData._id);
+  //     if (!user) {
+  //       return res.status(404).json({ error: "User not found" });
+  //     }
+
+  //     // Verificar el rol del usuario
+  //     if (user.role !== "admin") {
+  //       return res.status(401).json({ error: "You are not an admin" });
+  //     }
+
+  //     // Almacenar el ID del usuario en la solicitud para su uso posterior si es necesario
+  //     req.userId = user._id;
+
+  //     // Si todo está bien, pasar al siguiente middleware
+  //     next();
+  //   } catch (error) {
+  //     // Si hay algún error, responder con un estado 500 y un mensaje de error
+  //     console.error(error);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // },
 };

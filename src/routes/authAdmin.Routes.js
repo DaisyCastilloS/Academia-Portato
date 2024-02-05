@@ -4,10 +4,10 @@ const router = express.Router();
 const {
   RegisterAdmin,
   LoginUA,
-  LogoutAdmin,
+  LogoutUA,
 } = require("../controllers/auth.controllers.js");
 
 router.post("/registerAdmin", RegisterAdmin);
 router.post("/loginAdmin", LoginUA);
-router.post("/logoutAdmin", LogoutAdmin);
+router.post("/logoutAdmin", LogoutUA);
 module.exports = router;

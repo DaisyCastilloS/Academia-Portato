@@ -1,7 +1,7 @@
 const UserSchema = require("../models/user.models.js");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-
+const { isAdmin } = require("../middlewares/auth.middlewares.js");
 module.exports = {
   GetAllUsers: (req, res) => {
     UserSchema.find()
@@ -71,28 +71,27 @@ module.exports = {
       });
     }
   },
-  DeleteUser: (req, res) => {
+  DeleteUser: async (req, res) => {
     const { id } = req.params;
 
-    // Verificar si el usuario está autenticado y es un administrador
-    if (!req.user || !req.user.isAdmin) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
-      UserSchema.deleteOne({ _id: id }).then((data) => {
-        if (data.deletedCount > 0) {
-          res.status(200).json({ message: "User deleted successfully" });
-        } else {
-          res.status(404).json({
-            message: "User not found or cannot be deleted",
-          });
-        }
-      });
+      const user = await UserSchema.findOneAndDelete({ _id: id });
+      //console.log(user);
+      if (user) {
+        res.status(200).json({
+          status: "Usuario borrado",
+        });
+      } else {
+        res.status(400).json({
+          status: "usuario no encontrado",
+        });
+      }
     } catch (error) {
-      res.status(500).json({ message: error });
+      console.error(error); // Log the error for debugging purposes
+      res.status(500).json({
+        status: "no autorizado",
+        message: error.message,
+      });
     }
   },
 };
-
-//arreglar update user  update course
